@@ -67,6 +67,7 @@ import AdminPokedex from './pages/Admin/AdminPokedex';
 import AdminAntiCheat from './pages/Admin/AdminAntiCheat';
 import AdminStories from './pages/Admin/AdminStories';
 import AdminGrammar from './pages/Admin/AdminGrammar';
+import AdminNotifications from './pages/Admin/AdminNotifications';
 import GrammarLobby from './pages/GrammarLobby';
 import GrammarLesson from './pages/GrammarLesson';
 import AIListening from './pages/AIListening';
@@ -487,6 +488,13 @@ function App() {
             <AdminRoute>
               <AdminLayout>
                 <AdminSystemConfig />
+              </AdminLayout>
+            </AdminRoute>
+          } />
+          <Route path="/admin/notifications" element={
+            <AdminRoute>
+              <AdminLayout>
+                <AdminNotifications />
               </AdminLayout>
             </AdminRoute>
           } />

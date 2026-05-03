@@ -275,13 +275,11 @@ export default function Dashboard() {
         {/* ── 2. MAIN CONTENT (Center) ──────────────────────────── */}
         <div className="flex-1 min-w-0 flex flex-col gap-6 mt-6 lg:mt-0">
 
-          {/* Topbar Mobile-friendly */}
-          <div className="flex items-center justify-between gap-3">
-            <DashboardTopbar user={dashboardData.user} theme={t} />
-            <div className="flex xl:hidden items-center gap-2 shrink-0">
-              <StreakFlame days={dashboardData.stats.streak} />
-              <CoinBadge amount={dashboardData.stats.coins} />
-            </div>
+          {/* Topbar + Mobile stats */}
+          <DashboardTopbar user={dashboardData.user} theme={t} />
+          <div className="flex xl:hidden items-center gap-2 shrink-0 -mt-2">
+            <StreakFlame days={dashboardData.stats.streak} />
+            <CoinBadge amount={dashboardData.stats.coins} />
           </div>
 
           {/* Placement Nudge */}
@@ -515,7 +513,7 @@ export default function Dashboard() {
         {/* ── 3. RIGHT PANEL (Gamification & Reminders) ─────────── */}
         <div className="hidden xl:flex flex-col gap-6 w-[300px] shrink-0 mt-6 lg:mt-0">
 
-          <div className="flex items-center justify-between px-2">
+          <div className="flex items-center gap-2 px-2">
             <StreakFlame days={dashboardData.stats.streak} />
             <CoinBadge amount={dashboardData.stats.coins} />
           </div>

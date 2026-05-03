@@ -53,6 +53,11 @@ export const updateUserStatus = (id, status) => adminAxios.patch(`/admin/users/$
 export const deleteUser = (id) => adminAxios.delete(`/admin/users/${id}`);
 export const getUserStats = () => adminAxios.get('/admin/users/stats');
 
+// ============ ADMIN NOTIFICATIONS ============
+export const getNotificationRecipientStats = () => adminAxios.get('/admin/notifications/recipients/stats');
+export const getNotificationHistory = (limit = 20) => adminAxios.get('/admin/notifications/history', { params: { limit } });
+export const sendAdminNotification = (payload) => adminAxios.post('/admin/notifications/send', payload);
+
 // ============ LESSONS ============
 export const getLessonsByTopic = (topicId) => adminAxios.get(`/admin/topics/${topicId}/lessons`);
 export const createLesson = (topicId, data) => adminAxios.post(`/admin/topics/${topicId}/lessons`, data);
@@ -190,6 +195,10 @@ export default {
   updateUserStatus,
   deleteUser,
   getUserStats,
+  // Admin Notifications
+  getNotificationRecipientStats,
+  getNotificationHistory,
+  sendAdminNotification,
   // Lessons
   getLessonsByTopic,
   createLesson,

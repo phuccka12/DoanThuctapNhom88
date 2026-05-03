@@ -304,16 +304,37 @@ def _gemini_assist_language_quality(transcript, question, local_hybrid, lang_qua
         return local_hybrid, None
 
     prompt = f"""
-    Role: IELTS Speaking Scoring Calibrator.
-    Transcript: "{transcript}"
-    Question: "{question}"
-    Current local scores (0-9):
-    - lexical: {local_hybrid.get('lexical', 5.0)}
-    - semantic: {local_hybrid.get('semantic', 5.0)}
-    - word_usage: {local_hybrid.get('word_usage', 5.0)}
-    - grammar: {local_hybrid.get('grammar', 5.0)}
-    Return JSON only with keys:
-    lexical_score, semantic_score, usage_score, grammar_score, confidence, note.
+    Role: Senior IELTS Speaking Examiner (Professional, Strict, and Unbiased).
+    Context: A candidate is practicing for the IELTS Speaking test. You must calibrate their performance based on official IELTS marking criteria.
+
+    [INPUT DATA]
+    - Transcript: "{transcript}"
+    - Question: "{question}"
+    - System Baseline (0-9): Lexical={local_hybrid.get('lexical', 5.0)}, Semantic={local_hybrid.get('semantic', 5.0)}, WordUsage={local_hybrid.get('word_usage', 5.0)}, Grammar={local_hybrid.get('grammar', 5.0)}
+
+    [SCORING RULES - STRICT ENFORCEMENT]
+    1. RESPONSE LENGTH PENALTY (CRITICAL):
+       - If word count < 6: MAX overall score for all categories is 3.5 (Inadequate).
+       - If word count 6-15: MAX overall score is 5.5 (Limited development).
+       - To reach Band 7.0+, the candidate MUST speak at least 30 meaningful words.
+
+    2. RELEVANCE & COHERENCE:
+       - If the answer is "Off-topic" or doesn't address the prompt: Set semantic_score to 3.0 immediately.
+       - Penalize heavily for excessive repetition of simple words (e.g., "like", "and", "good").
+
+    3. LEXICAL RESOURCE & GRAMMAR:
+       - Band 7.0+: Must use idiomatic expressions or academic words.
+       - No complex sentences (relative clauses, etc.)? -> Max Grammar score is 5.5.
+
+    [OUTPUT FORMAT - JSON ONLY]
+    {{
+        "lexical_score": float,
+        "semantic_score": float,
+        "usage_score": float,
+        "grammar_score": float,
+        "confidence": float,
+        "note": "Phản hồi sư phạm thẳng thắn bằng tiếng Việt (Ví dụ: 'Câu trả lời quá ngắn', 'Thiếu chiều sâu', 'Lặp từ nhiều'...)"
+    }}
     """
 
     ai = gemini_service.call_gemini_json(prompt)

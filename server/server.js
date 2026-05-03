@@ -15,6 +15,7 @@ const dashboardRoutes = require('./src/routes/dashboardRoutes');
 const onboardingRoutes = require('./src/routes/onboardingRoutes');
 const placementRoutes = require('./src/routes/placementRoutes');
 const userRoutes = require('./src/routes/userRoutes');
+const notificationRoutes = require('./src/routes/notificationRoutes');
 
 // Import CMS public routes
 const topicRoutes = require('./src/routes/Public/PublicTopics');
@@ -41,6 +42,7 @@ const adminShopRoutes = require('./src/routes/Admin/AdminShop');
 const adminEconomyRoutes = require('./src/routes/Admin/AdminEconomy');
 const adminPokedexRoutes = require('./src/routes/Admin/AdminPokedex');
 const adminAntiCheatRoutes = require('./src/routes/Admin/AdminAntiCheat');
+const adminNotificationsRoutes = require('./src/routes/Admin/AdminNotifications');
 // ─────────────────────────────────────────────────────────────────────────────
 const adminWritingScenarioRoutes = require('./src/routes/Admin/AdminWritingScenarios');
 const billingRoutes = require('./src/routes/billingRoutes');
@@ -110,6 +112,7 @@ app.get('/api/maintenance/status', (req, res) => res.json({ maintenance: false }
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/notifications', notificationRoutes);
 app.use('/api/admin/topics', adminTopicRoutes);
 app.use('/api/admin/writing-prompts', adminWritingPromptRoutes);
 app.use('/api/admin/speaking-questions', adminSpeakingQuestionRoutes);
@@ -128,6 +131,7 @@ app.use('/api/admin/shop', adminShopRoutes);
 app.use('/api/admin/economy', adminEconomyRoutes);
 app.use('/api/admin/pokedex', adminPokedexRoutes);
 app.use('/api/admin/anti-cheat', adminAntiCheatRoutes);
+app.use('/api/admin/notifications', adminNotificationsRoutes);
 app.use('/api/admin/stories', adminStoryRoutes);
 app.use('/api/admin/writing-scenarios', adminWritingScenarioRoutes);
 // ─────────────────────────────────────────────────────────────────────────────

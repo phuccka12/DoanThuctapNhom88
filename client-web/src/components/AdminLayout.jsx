@@ -1,6 +1,6 @@
 ﻿import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { FiMenu, FiX, FiLogOut, FiHome, FiBook, FiHeadphones, FiEdit3, FiUsers, FiBookOpen, FiFileText, FiDollarSign, FiSettings, FiVolume2, FiHeart, FiShoppingBag, FiSliders, FiShield } from 'react-icons/fi';
+import { FiMenu, FiX, FiLogOut, FiHome, FiBook, FiHeadphones, FiEdit3, FiUsers, FiBookOpen, FiFileText, FiDollarSign, FiSettings, FiVolume2, FiHeart, FiShoppingBag, FiSliders, FiShield, FiBell } from 'react-icons/fi';
 import { GiDragonSpiral } from 'react-icons/gi';
 import { FaBookOpen } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
@@ -27,6 +27,7 @@ const menuItems = [
   { icon: FiShield,       label: 'Anti-Cheat',         path: '/admin/anti-cheat' },
   { divider: true, label: 'HỆ THỐNG' },
   { icon: FiDollarSign, label: 'Gói cước',  path: '/admin/billing' },
+  { icon: FiBell,       label: 'Thông báo', path: '/admin/notifications' },
   { icon: FiSettings,   label: 'Cài đặt',   path: '/admin/system-config' },
 ];
 

@@ -43,11 +43,20 @@ export default function Register() {
     e.preventDefault();
     setError('');
 
+    if (formData.firstName.trim().length < 2) {
+      return setError('Vui lòng nhập họ tên thật của bạn (tối thiểu 2 ký tự)');
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email)) {
+      return setError('Định dạng email không hợp lệ (ví dụ: name@example.com)');
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      return setError('Mật khẩu xác nhận không khớp');
+      return setError('Mật khẩu xác nhận không khớp. Vui lòng kiểm tra lại.');
     }
     if (formData.password.length < 6) {
-      return setError('Mật khẩu phải có ít nhất 6 ký tự');
+      return setError('Mật khẩu phải có ít nhất 6 ký tự để bảo vệ tài khoản của bạn');
     }
 
     setLoading(true);

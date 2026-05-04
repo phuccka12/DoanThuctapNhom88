@@ -5,11 +5,12 @@ import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
 import { cn } from '../utils/cn';
+import ReactMarkdown from 'react-markdown';
 import {
   FaMicrophone, FaStop, FaPaperPlane, FaFire, FaTrophy, FaStar,
   FaChartLine, FaComments, FaVolumeUp,
   FaExclamationTriangle, FaLightbulb, FaMedal,
-  FaCoins, FaChevronLeft, FaSpinner, FaRandom, FaRedo
+  FaCoins, FaChevronLeft, FaSpinner, FaRandom, FaRedo, FaCheck
 } from 'react-icons/fa';
 import { HiSparkles } from 'react-icons/hi';
 import LoadingCat from '../components/shared/LoadingCat';
@@ -108,6 +109,9 @@ const AISpeaking = () => {
   const handleCheck = async () => {
     if (!audioFile && !mediaBlobUrl) { alert('Chưa có ghi âm! Hãy nói trước.'); return; }
     setLoading(true); setResult(null); setActiveResultTab('overview');
+
+
+
     try {
       let fileToSend = audioFile;
       if (!fileToSend && mediaBlobUrl) {
@@ -197,15 +201,26 @@ const AISpeaking = () => {
 
   const radarData = useMemo(() => {
     if (!result?.radar_chart) return null;
+    
+    // Helper để tìm điểm trong object radar_chart bất kể viết hoa/thường/suffix
+    const getScore = (keyParts) => {
+      const keys = Object.keys(result.radar_chart);
+      for (const part of keyParts) {
+        const foundKey = keys.find(k => k.toLowerCase().includes(part.toLowerCase()));
+        if (foundKey) return result.radar_chart[foundKey];
+      }
+      return 0;
+    };
+
     return {
       labels: ['Fluency', 'Lexical', 'Grammar', 'Pronunciation'],
       datasets: [{
         label: 'Score',
         data: [
-          result.radar_chart.Fluency ?? result.radar_chart.fluency ?? result.radar_chart.fluency_coherence ?? 0,
-          result.radar_chart.Lexical ?? result.radar_chart.lexical ?? result.radar_chart.lexical_resource ?? 0,
-          result.radar_chart.Grammar ?? result.radar_chart.grammar ?? result.radar_chart.grammatical_range_accuracy ?? 0,
-          result.radar_chart.Pronunciation ?? result.radar_chart.pronunciation ?? 0
+          getScore(['fluency', 'coherence']),
+          getScore(['lexical', 'vocabulary']),
+          getScore(['grammar', 'accuracy']),
+          getScore(['pronunciation', 'accent'])
         ],
         backgroundColor: 'rgba(168,85,247,0.15)',
         borderColor: 'rgba(168,85,247,1)',
@@ -465,18 +480,69 @@ const AISpeaking = () => {
                           </div>
                         </div>
 
-                        {/* Detailed Feedback (Overall Assesment or Fallback Message) */}
+                        {/* 🌟 AI COACH DETAILED FEEDBACK */}
                         {result.detailed_feedback && (
-                          <div className="rounded-3xl border border-sky-500/15 bg-sky-500/5 p-6 mb-4">
-                            <div className="flex items-center gap-2 mb-3">
-                              <HiSparkles className="text-sky-600 dark:text-sky-400 text-sm" />
-                              <h3 className="text-xs font-black text-sky-800 dark:text-white uppercase tracking-wider">Nhận xét từ AI Coach</h3>
-                            </div>
-                            <p className="text-slate-700 dark:text-slate-300 leading-relaxed text-sm">
-                              {typeof result.detailed_feedback === 'object' && result.detailed_feedback !== null 
-                                ? Object.entries(result.detailed_feedback).map(([k, v]) => `${k.replace(/_/g, ' ').toUpperCase()}: ${typeof v === 'object' ? JSON.stringify(v) : v}`).join(' | ') 
-                                : result.detailed_feedback}
-                            </p>
+                          <div className="space-y-4">
+                            {typeof result.detailed_feedback === 'string' ? (
+                              <div className="rounded-3xl border border-purple-500/15 bg-purple-500/5 p-6 shadow-sm">
+                                <div className="flex items-center gap-2 mb-4">
+                                  <HiSparkles className="text-purple-600 dark:text-purple-400" size={18} />
+                                  <h3 className="text-xs font-black text-purple-800 dark:text-white uppercase tracking-widest">Nhận xét chi tiết</h3>
+                                </div>
+                                <div className="prose prose-slate dark:prose-invert max-w-none text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+                                  <ReactMarkdown>{result.detailed_feedback}</ReactMarkdown>
+                                </div>
+                              </div>
+                            ) : (
+                              <div className="grid grid-cols-1 gap-4">
+                                {Object.entries(result.detailed_feedback).map(([key, value], idx) => {
+                                  const label = key.replace(/_/g, ' ').toUpperCase();
+                                  let colorClass = "border-sky-500/15 bg-sky-500/5 text-sky-800 dark:text-sky-300";
+                                  let icon = <HiSparkles size={16} />;
+                                  
+                                  if (key.includes('strength') || key.includes('good') || key.includes('plus')) {
+                                    colorClass = "border-emerald-500/20 bg-emerald-500/5 text-emerald-800 dark:text-emerald-300";
+                                    icon = <FaCheck className="text-emerald-500" size={14} />;
+                                  } else if (key.includes('improve') || key.includes('weak') || key.includes('error') || key.includes('issue')) {
+                                    colorClass = "border-rose-500/20 bg-rose-500/5 text-rose-800 dark:text-rose-300";
+                                    icon = <FaExclamationTriangle className="text-rose-500" size={14} />;
+                                  } else if (key.includes('tip') || key.includes('advice') || key.includes('coach')) {
+                                    colorClass = "border-amber-500/20 bg-amber-500/5 text-amber-800 dark:text-amber-300";
+                                    icon = <FaLightbulb className="text-amber-500" size={14} />;
+                                  }
+
+                                  return (
+                                    <motion.div 
+                                      key={key}
+                                      initial={{ opacity: 0, x: -10 }}
+                                      animate={{ opacity: 1, x: 0 }}
+                                      transition={{ delay: 0.1 + idx * 0.05 }}
+                                      className={cn("rounded-2xl border p-5 shadow-sm", colorClass)}
+                                    >
+                                      <div className="flex items-center gap-2 mb-3">
+                                        <div className="w-7 h-7 rounded-lg bg-white/20 flex items-center justify-center">
+                                          {icon}
+                                        </div>
+                                        <h4 className="text-[10px] font-black uppercase tracking-widest">{label}</h4>
+                                      </div>
+                                      <div className="text-sm leading-relaxed opacity-90">
+                                        {typeof value === 'string' ? (
+                                          <ReactMarkdown>{value}</ReactMarkdown>
+                                        ) : typeof value === 'object' && value !== null ? (
+                                          <div className="space-y-1">
+                                            {value.score && <p className="font-bold text-xs">Score: {value.score}</p>}
+                                            {value.feedback && <ReactMarkdown>{value.feedback}</ReactMarkdown>}
+                                            {!value.score && !value.feedback && <pre className="text-[10px] opacity-50 whitespace-pre-wrap">{JSON.stringify(value)}</pre>}
+                                          </div>
+                                        ) : (
+                                          String(value)
+                                        )}
+                                      </div>
+                                    </motion.div>
+                                  );
+                                })}
+                              </div>
+                            )}
                           </div>
                         )}
 

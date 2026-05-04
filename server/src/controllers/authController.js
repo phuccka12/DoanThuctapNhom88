@@ -16,15 +16,25 @@ exports.register = async (req, res) => {
     const { user_name, email, password } = req.body;
 
     if (!user_name || !email || !password) {
-      return res.status(400).json({ message: "Vui lòng nhập đủ user_name, email, mật khẩu" });
+      return res.status(400).json({ message: "Vui lòng nhập đầy đủ họ tên, email và mật khẩu" });
     }
+
+    if (user_name.trim().length < 2) {
+      return res.status(400).json({ message: "Họ tên phải có ít nhất 2 ký tự" });
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: "Định dạng email không hợp lệ (ví dụ: name@example.com)" });
+    }
+
     if (password.length < 6) {
-      return res.status(400).json({ message: "Mật khẩu tối thiểu 6 ký tự" });
+      return res.status(400).json({ message: "Mật khẩu phải có tối thiểu 6 ký tự để đảm bảo an toàn" });
     }
 
     const emailLower = String(email).toLowerCase().trim();
     const existed = await User.findOne({ email: emailLower });
-    if (existed) return res.status(409).json({ message: "Email đã tồn tại" });
+    if (existed) return res.status(409).json({ message: "Email này đã được đăng ký. Bạn có muốn đăng nhập không?" });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -39,7 +49,7 @@ exports.register = async (req, res) => {
     const token = signToken(user);
 
     return res.status(201).json({
-      message: "Đăng ký thành công",
+      message: "Chào mừng bạn gia nhập! Đăng ký thành công.",
       token,
       user: {
         id: user._id,
@@ -51,7 +61,7 @@ exports.register = async (req, res) => {
       },
     });
   } catch (err) {
-    return res.status(500).json({ message: "Lỗi server", error: err.message });
+    return res.status(500).json({ message: "Lỗi hệ thống khi đăng ký", error: err.message });
   }
 };
 
@@ -61,15 +71,15 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(400).json({ message: "Vui lòng nhập email và mật khẩu" });
+      return res.status(400).json({ message: "Vui lòng nhập đầy đủ email và mật khẩu" });
 
     const emailLower = String(email).toLowerCase().trim();
     const user = await User.findOne({ email: emailLower });
     
-    if (!user) return res.status(401).json({ message: "Sai email hoặc mật khẩu" });
+    if (!user) return res.status(401).json({ message: "Email này chưa được đăng ký trong hệ thống" });
 
     if (user.lock_until && user.lock_until > new Date()) {
-      return res.status(423).json({ message: "Tài khoản tạm khóa do đăng nhập sai nhiều lần. Thử lại sau." });
+      return res.status(423).json({ message: "Tài khoản tạm khóa do đăng nhập sai nhiều lần. Vui lòng thử lại sau vài phút." });
     }
 
     // nếu hết hạn VIP thì tự hạ xuống standard
@@ -79,7 +89,7 @@ exports.login = async (req, res) => {
     }
 
     const ok = await bcrypt.compare(password, user.password_hash);
-    if (!ok) return res.status(401).json({ message: "Sai email hoặc mật khẩu" });
+    if (!ok) return res.status(401).json({ message: "Mật khẩu không chính xác. Vui lòng kiểm tra lại." });
     
     user.failed_login_attempts = 0;
     user.lock_until = null;

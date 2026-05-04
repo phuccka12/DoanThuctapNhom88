@@ -66,9 +66,9 @@ exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   const emailLower = String(email).toLowerCase().trim();
 
-  // Không leak thông tin email có tồn tại hay không
+  // Tìm user theo email
   const user = await User.findOne({ email: emailLower });
-  if (!user) return res.json({ message: "Nếu email tồn tại, hệ thống đã gửi hướng dẫn đặt lại mật khẩu." });
+  if (!user) return res.status(404).json({ message: "Địa chỉ email này chưa được đăng ký trong hệ thống. Vui lòng kiểm tra lại!" });
 
   const raw = createRawToken();
   const tokenHash = hashRawToken(raw);
@@ -91,7 +91,7 @@ exports.forgotPassword = async (req, res) => {
     html: `Click để đặt lại mật khẩu: <a href="${link}">${link}</a>`,
   });
 
-  return res.json({ message: "Nếu email tồn tại, hệ thống đã gửi hướng dẫn đặt lại mật khẩu." });
+  return res.json({ message: `Hệ thống đã gửi link đặt lại mật khẩu vào hòm thư ${emailLower}. Vui lòng kiểm tra!` });
 };
 
 // POST /api/auth/reset-password  (public)

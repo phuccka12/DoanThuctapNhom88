@@ -954,8 +954,13 @@ def evaluate_speaking():
         3. If Silence Ratio > 0.3, focus on 'Fluency and Coherence'.
         4. The final overall_score should consider the XGBoost prediction but allow for your semantic correction.
 
-        Output JSON only (Vietnamese): overall_score, radar_chart (Fluency, Pronunciation, Lexical, Grammar),
-        detailed_feedback, mistakes_timeline, vocab_upgrade, better_version.
+        Output JSON only (Vietnamese): 
+        overall_score (0.0-9.0), 
+        radar_chart (object with keys: Fluency, Pronunciation, Lexical, Grammar - values must be numbers 0-9),
+        detailed_feedback (object with keys: overall_assessment, strengths, areas_for_improvement, coach_tips), 
+        mistakes_timeline (list), 
+        vocab_upgrade (list), 
+        better_version (string).
         """
 
         ai_result = None
@@ -1150,7 +1155,11 @@ def evaluate_speaking_stream():
             Target Question: "{target_question}"
             Local Hybrid Score: {local_hybrid['overall_score']}/9
             Give deep feedback in Vietnamese with JSON keys:
-            overall_score, detailed_feedback, radar_chart, vocab_upgrade, better_version.
+            overall_score (0.0-9.0),
+            detailed_feedback (object with keys: overall_assessment, strengths, areas_for_improvement, coach_tips),
+            radar_chart (object with keys: Fluency, Lexical, Grammar, Pronunciation - values must be numbers 0-9),
+            vocab_upgrade (list),
+            better_version (string).
             """
 
             ai_result = None

@@ -16,11 +16,18 @@ export default function ForgotPassword() {
     setError('');
     setLoading(true);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Định dạng email không hợp lệ (ví dụ: name@example.com)');
+      setLoading(false);
+      return;
+    }
+
     try {
       await axios.post('http://localhost:3001/api/auth/forgot-password', { email });
       setSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.message || 'Gửi email thất bại. Vui lòng thử lại sau.');
+      setError(err.response?.data?.message || 'Không thể gửi yêu cầu. Vui lòng kiểm tra kết nối mạng!');
     } finally {
       setLoading(false);
     }

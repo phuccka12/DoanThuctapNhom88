@@ -276,7 +276,12 @@ Please respond STRICTLY in this JSON format (NO markdown, NO extra text):
     "<specific error 1 with phonetic detail>",
     "<specific error 2 with phonetic detail>"
   ],
-  "detailed_feedback": "### 🌟 NHẬN XÉT TỔNG QUAN\n[1-2 câu tóm tắt ấn tượng chung về bài nói]\n\n### ✅ ĐIỂM MẠNH\n- **Phát âm**: [Ưu điểm về âm học]\n- **Ngữ điệu**: [Ưu điểm về độ tự nhiên]\n\n### 🛠️ ĐIỂM CẦN CẢI THIỆN\n- **Lỗi cụ thể**: [Mô tả chi tiết lỗi và cách sửa]\n- **Độ trôi chảy**: [Gợi ý về tốc độ và ngắt nghỉ]\n\n### 💡 LỜI KHUYÊN TỪ COACH\n[Lời khuyên truyền cảm hứng và lộ trình ngắn gọn]",
+  "detailed_feedback": {
+    "overall_assessment": "[1-2 sentence summary of general impression]",
+    "strengths": "- **Pronunciation**: [Acoustic highlights]\n- **Intonation**: [Naturalness highlights]",
+    "areas_for_improvement": "- **Specific Errors**: [Detailed phonetic errors and fixes]\n- **Fluency**: [Suggestions on speed and pausing]",
+    "coach_tips": "[Inspirational advice and concise roadmap]"
+  },
   "pronunciation_tips": [
     "<actionable tip 1 with example>",
     "<actionable tip 2 with example>"

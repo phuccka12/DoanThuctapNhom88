@@ -34,6 +34,13 @@ export default function Login() {
     setError('');
     setLoading(true);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setError('Định dạng email không hợp lệ (ví dụ: name@example.com)');
+      setLoading(false);
+      return;
+    }
+
     try {
       const response = await login(email, password);
       const userRole = response?.user?.role;

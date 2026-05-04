@@ -29,11 +29,11 @@ export default function ResetPassword() {
     setError('');
 
     if (password !== confirmPassword) {
-       return setError('Mật khẩu xác nhận không trùng khớp.');
+       return setError('Mật khẩu xác nhận không khớp. Vui lòng nhập lại chính xác.');
     }
 
     if (password.length < 6) {
-      return setError('Mật khẩu mới phải có ít nhất 6 ký tự.');
+      return setError('Vì lý do bảo mật, mật khẩu mới phải có ít nhất 6 ký tự.');
     }
 
     setLoading(true);
@@ -45,7 +45,7 @@ export default function ResetPassword() {
       setSuccess(true);
       setTimeout(() => navigate('/login'), 3500);
     } catch (err) {
-      setError(err.response?.data?.message || 'Đặt lại mật khẩu thất bại. Vui lòng thử lại.');
+      setError(err.response?.data?.message || 'Link đặt lại mật khẩu có vẻ đã hết hạn. Vui lòng yêu cầu link mới.');
     } finally {
       setLoading(false);
     }
